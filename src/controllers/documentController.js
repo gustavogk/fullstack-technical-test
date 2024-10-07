@@ -36,7 +36,7 @@ exports.deleteDocument = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.document.delete({ where: { id: Number(id) } });
-    res.status(204).send();
+    res.status(204).json({ message: "Documento deletado com sucesso." });
   } catch (error) {
     res.status(400).json({ error: "Document deletion failed", details: error });
   }
