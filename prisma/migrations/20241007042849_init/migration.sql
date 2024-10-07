@@ -9,7 +9,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Document" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
+    "status" BOOLEAN NOT NULL,
     "userId" INTEGER NOT NULL,
     CONSTRAINT "Document_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

@@ -13,7 +13,7 @@ const App = () => {
   const [newUser, setNewUser] = useState({ name: "", email: "" });
   const [newDocument, setNewDocument] = useState({
     name: "",
-    status: "",
+    status: false,
     userId: "",
   });
   const [editingUser, setEditingUser] = useState(null);
@@ -51,7 +51,7 @@ const App = () => {
       }
       setNewUser({ name: "", email: "" });
       setEditingUser(null);
-      fetchUsers(); // Atualiza os usuários
+      window.location.reload(); // Atualiza a página após a criação/edição
     } catch (error) {
       console.error("Erro ao adicionar ou atualizar usuário:", error);
     }
@@ -68,9 +68,9 @@ const App = () => {
       } else {
         await axios.post(`${API_URL}/documents`, newDocument);
       }
-      setNewDocument({ name: "", status: "", userId: "" });
+      setNewDocument({ name: "", status: false, userId: "" });
       setEditingDocument(null);
-      fetchDocuments();
+      window.location.reload(); // Atualiza a página após a criação/edição
     } catch (error) {
       console.error("Erro ao adicionar ou atualizar documento:", error);
     }
@@ -93,7 +93,7 @@ const App = () => {
   const handleDeleteUser = async (id) => {
     try {
       await axios.delete(`${API_URL}/users/${id}`);
-      fetchUsers();
+      window.location.reload(); // Atualiza a página após a exclusão
     } catch (error) {
       console.error("Erro ao deletar usuário:", error);
     }
@@ -102,7 +102,7 @@ const App = () => {
   const handleDeleteDocument = async (id) => {
     try {
       await axios.delete(`${API_URL}/documents/${id}`);
-      fetchDocuments();
+      window.location.reload(); // Atualiza a página após a exclusão
     } catch (error) {
       console.error("Erro ao deletar documento:", error);
     }
@@ -132,7 +132,7 @@ const App = () => {
                   {user.documents && user.documents.length > 0 ? (
                     user.documents.map((doc) => (
                       <li key={doc.id} style={styles.nestedListItem}>
-                        {doc.name} - {doc.status}
+                        {doc.name} - {doc.status ? "Ativo" : "Inativo"}
                       </li>
                     ))
                   ) : (
@@ -194,7 +194,8 @@ const App = () => {
           <ul style={styles.list}>
             {documents.map((doc) => (
               <li key={doc.id} style={styles.listItem}>
-                {doc.name} - {doc.status} (User ID: {doc.userId})
+                {doc.name} - {doc.status ? "Ativo" : "Inativo"} (User ID:{" "}
+                {doc.userId})
                 <button
                   onClick={() => handleEditDocument(doc)}
                   style={styles.button}
@@ -228,16 +229,20 @@ const App = () => {
             required
             style={styles.input}
           />
-          <input
-            type="text"
-            placeholder="Status"
+          <select
             value={newDocument.status}
             onChange={(e) =>
-              setNewDocument({ ...newDocument, status: e.target.value })
+              setNewDocument({
+                ...newDocument,
+                status: e.target.value === "true",
+              })
             }
             required
             style={styles.input}
-          />
+          >
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </select>
           <input
             type="number"
             placeholder="ID do Usuário"
